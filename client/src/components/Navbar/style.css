@@ -1,0 +1,12 @@
+.navbar {
+    display: flex;
+    background-color: cornflowerblue;
+    gap: 50px;
+    padding-left: 30px;
+}
+.navbar div {
+    padding-top: 35px;
+}
+.project-name {
+    margin-right: 870px;
+}
