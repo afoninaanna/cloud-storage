@@ -25,7 +25,7 @@ router.post('/registration',
                 return res.status(400).json({message: `User with email ${email} already exist`});
             }
             
-            const hashPassword = await bcrypt.hash(password, 15);
+            const hashPassword = await bcrypt.hash(password, 8);
             const user = new User({email, password: hashPassword});
             await user.save();
             return res.json({message: 'User was created'});
