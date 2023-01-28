@@ -1,0 +1,23 @@
+.login-form {
+   display: flex;
+   flex-direction: column;
+   width: 400px;
+   height: 400px;
+   align-items: center;
+   justify-content: center;
+   margin: 100px auto;
+   border: 1px solid cornflowerblue;
+   font-size: 30px;
+}
+.login-form input {
+    width: 300px;
+    height: 30px;
+    margin-top: 20px;
+}
+.login-form button {
+    border: none;
+    width: 300px;
+    height: 40px;
+    margin-top: 60px;
+    border-radius: 30px;
+}
