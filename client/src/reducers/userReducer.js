@@ -10,7 +10,6 @@ const LOGOUT = "LOGOUT";
 export default function userReducer(state = defaultState, action) {
     switch (action.type) {
         case SET_USER:
-            console.log(action.payload);
             return {
                 ...state,
                 currentUser: action.payload,
