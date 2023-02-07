@@ -29,7 +29,7 @@ class FileController {
     async fetchFiles(req, res) {
         try {
             const files = await File.find({user: req.user.id, parent: req.query.parent});
-            return res.json({files});
+            return res.json(files);
         } catch (error) {
             console.log(error);
             return res.status(500).json({ message: 'Can not get files'});
@@ -38,4 +38,3 @@ class FileController {
 }
 
 module.exports = new FileController();
-//7:05
