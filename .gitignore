@@ -11,3 +11,4 @@ client/node_modules
 .DS_Store
 
 server/config
+server/files
