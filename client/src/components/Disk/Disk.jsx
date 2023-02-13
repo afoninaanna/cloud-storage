@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { createDir, getFiles, uploadFile } from '../../actions/file';
 import { setCurrentDir, setPopupDisplay } from '../../reducers/fileReducer';
 import FileList from './FileList/FileList';
 import Popup from './Popup';
+import './Disk.css';
 
 const Disk = () => {
   const dispatch = useDispatch();
   const currentDir = useSelector(state => state.files.currentDir);
   const dirStack = useSelector(state => state.files.dirStack);
+  const [dragEnter, setDragEnter] = useState(false);
 
   useEffect(() => {
     dispatch(getFiles(currentDir));
@@ -28,8 +30,28 @@ const Disk = () => {
     files.forEach(file => dispatch(uploadFile(file, currentDir)));
   }
 
-  return (
-    <div>
+  function dragEnterHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragEnter(true);
+  }
+
+  function dragLeaveHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    setDragEnter(false);
+  }
+
+  function drogHandler(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    let files = [...event.dataTransfer.files];
+    setDragEnter(false);
+    files.forEach(file => dispatch(uploadFile(file, currentDir)));
+  }
+
+  return ( !dragEnter?
+    <div onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
       <div>
         <button onClick={() => backClickHandler()}>Назад</button>
         <button onClick={() => showPopupHandler()}>Создать папку</button>
@@ -40,6 +62,10 @@ const Disk = () => {
       </div>
       <FileList/>
       <Popup/>
+    </div>
+    :
+    <div className='drop-area' onDrop={drogHandler} onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
+      Перетащите файлы сюда
     </div>
   )
 }
