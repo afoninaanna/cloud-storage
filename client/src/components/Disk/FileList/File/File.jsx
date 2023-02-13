@@ -7,11 +7,13 @@ const File = ({file}) => {
   const currentDir = useSelector(state => state.files.currentDir);
 
   function openHandler () {
-    dispatch(pushToStack(currentDir));
-    dispatch(setCurrentDir(file._id));
+    if (file.type === 'dir') {
+      dispatch(pushToStack(currentDir));
+      dispatch(setCurrentDir(file._id));
+    }
   }
   return (
-    <div onClick={file.type === 'dir' ? () => openHandler() : ''}>
+    <div onClick={() => openHandler()}>
       <img src='' alt=''/>
       <div>{file.name}</div>
       <div>{file.date.slice(0,10)}</div>
