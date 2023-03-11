@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { downloadFile } from '../../../../actions/file';
+import { deleteFile, downloadFile } from '../../../../actions/file';
 import { pushToStack, setCurrentDir } from '../../../../reducers/fileReducer';
 
 const File = ({file}) => {
@@ -17,6 +17,10 @@ const File = ({file}) => {
     e.stopPropagation();
     downloadFile(file);
   }
+  function deleteClickHandler(e) {
+    e.stopPropagation();
+    dispatch(deleteFile(file));
+  }
   return (
     <div onClick={() => openHandler()}>
       <img src='' alt=''/>
@@ -24,7 +28,7 @@ const File = ({file}) => {
       <div>{file.date.slice(0,10)}</div>
       <div>{file.size}</div>
       {file.type !== 'dir' && <button onClick={(e) => downloadClickHandler(e)}>download</button>}
-      <button>delete</button>
+      <button onClick={(e) => deleteClickHandler(e)}>delete</button>
     </div>
   )
 }
