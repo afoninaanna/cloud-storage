@@ -12,3 +12,4 @@ client/node_modules
 
 server/config
 server/files
+server/static
