@@ -4,6 +4,14 @@ import File from './File/File'
 
 const FileList = () => {
   const files = useSelector(state => state.files.files).map(file => <File key={file._id} file={file}/>)
+
+  if (!files.length) {
+    return (
+      <div>
+        Файлы не найдены!
+      </div>
+    )
+  }
   
   return (
     <div>

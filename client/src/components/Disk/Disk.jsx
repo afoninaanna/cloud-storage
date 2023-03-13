@@ -9,6 +9,7 @@ import './Disk.css';
 const Disk = () => {
   const dispatch = useDispatch();
   const currentDir = useSelector(state => state.files.currentDir);
+  const loader = useSelector(state => state.app.loader);
   const dirStack = useSelector(state => state.files.dirStack);
   const [dragEnter, setDragEnter] = useState(false);
   const [sort, setSort] = useState('type');
@@ -49,6 +50,19 @@ const Disk = () => {
     let files = [...event.dataTransfer.files];
     setDragEnter(false);
     files.forEach(file => dispatch(uploadFile(file, currentDir)));
+  }
+
+  if (loader) {
+    return (
+      <div>
+        <div class="lds-ring">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    )
   }
 
   return ( !dragEnter?
