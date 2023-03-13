@@ -7,6 +7,7 @@ import sizeFormat from '../../../../utils/sizeFormat';
 const File = ({file}) => {
   const dispatch = useDispatch();
   const currentDir = useSelector(state => state.files.currentDir);
+  const fileView = useSelector(state => state.files.view);
 
   function openHandler () {
     if (file.type === 'dir') {
@@ -22,16 +23,29 @@ const File = ({file}) => {
     e.stopPropagation();
     dispatch(deleteFile(file));
   }
-  return (
-    <div onClick={() => openHandler()}>
-      <img src='' alt=''/>
-      <div>{file.name}</div>
-      <div>{file.date.slice(0,10)}</div>
-      <div>{sizeFormat(file.size)}</div>
-      {file.type !== 'dir' && <button onClick={(e) => downloadClickHandler(e)}>download</button>}
-      <button onClick={(e) => deleteClickHandler(e)}>delete</button>
-    </div>
-  )
+  if(fileView === 'plate') {
+    return (
+      <div onClick={() => openHandler()}>
+        <img src='' alt='' />
+        <div>{file.name}</div>
+        {file.type !== 'dir' && <button onClick={(e) => downloadClickHandler(e)}>download</button>}
+        <button onClick={(e) => deleteClickHandler(e)}>delete</button>
+      </div>
+    )
+  }
+
+  if(fileView === 'list') {
+    return (
+      <div onClick={() => openHandler()}>
+        <img src='' alt='' />
+        <div>{file.name}</div>
+        <div>{file.date.slice(0, 10)}</div>
+        <div>{sizeFormat(file.size)}</div>
+        {file.type !== 'dir' && <button onClick={(e) => downloadClickHandler(e)}>download</button>}
+        <button onClick={(e) => deleteClickHandler(e)}>delete</button>
+      </div>
+    )
+  }
 }
 
 export default File
