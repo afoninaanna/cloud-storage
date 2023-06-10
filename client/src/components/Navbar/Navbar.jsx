@@ -36,13 +36,13 @@ const Navbar = () => {
   return (
     <div className='navbar'>
         <img src={logo} alt='' className=''/>
-        <div className='project-name'>Cloud Storage</div>
+        <div className='project-name' >Cloud Storage</div>
         {isAuth && <input placeholder='Введите имя файла' value={searchName} onChange={(e) => searchHandler(e)}/>}
         {!isAuth && <div className=''><NavLink to='/login'>Войти</NavLink></div>}
         {!isAuth && <div className=''><NavLink to='/registration'>Регистрация</NavLink></div>}
-        {isAuth && <div className='' onClick={() => dispatch(logOut())}>Выйти</div>}
+        {isAuth && <div className='' onClick={() => dispatch(logOut())} style={{marginTop: 10}}>Выйти</div>}
         {isAuth && <NavLink to='/profile'>
-            <img className='avatar' src={avatar} alt='' />
+            <img className='avatar' src={avatar} alt='' style={{marginTop: 15}}/>
           </NavLink>
         }
     </div>

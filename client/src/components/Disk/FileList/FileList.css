@@ -1,3 +1,17 @@
 .plate {
     display: flex;
 }
+.fileList {
+   margin-top: 40px;
+}
+
+.fileList-header {
+    display: flex;
+    gap: 400px;
+    margin-left: 180px;
+}
+.none {
+    font-size: 26px;
+    margin-top: 100px;
+    margin-left: 620px;
+}

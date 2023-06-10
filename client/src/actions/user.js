@@ -10,7 +10,7 @@ export const registration = async (email, password) => {
         });
         alert(responce.data.message);
     } catch (error) {
-        console.log(error);
+        alert(error.response.data.message);
     }
 }
 
@@ -24,7 +24,7 @@ export const login = (email, password) => {
             dispatch(setUser(responce.data.user));
             localStorage.setItem("token", responce.data.token);
         } catch (error) {
-            console.log(error);
+            alert("Ошибка: неверное имя пользователя или пароль");
         }
     }
 }

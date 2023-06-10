@@ -2,6 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { NavLink } from 'react-router-dom';
 import { deleteAvatar, uploadAvatar } from '../../actions/user';
+import './Profile.css';
 
 const Profile = () => {
     const dispatch = useDispatch();
@@ -12,10 +13,12 @@ const Profile = () => {
     }
 
     return (
-        <div>
-            <NavLink to="/"><button>Назад</button></NavLink>
-            <button onClick={() => dispatch(deleteAvatar())}>Удалить аватар</button>
-            <input accept='image/*' onChange={(e) => changeHandler(e)} type='file' placeholder='Загрузить аватар'/>
+        <div className='containe'>
+            <NavLink to="/"><button className='back'>Назад</button></NavLink>
+            <div>
+                <button onClick={() => dispatch(deleteAvatar())}>Удалить аватар</button>
+                <input accept='image/*' onChange={(e) => changeHandler(e)} type='file' placeholder='Загрузить аватар'/>
+            </div>
         </div>
     )
 }

@@ -1,0 +1,31 @@
+.file {
+    margin: 20px 40px;
+    width: 1360px;
+    padding-bottom: 5px;
+    /* background-color: aquamarine; */
+    border-bottom: 1px solid #000;
+    display: grid;
+    grid-template-columns: 1fr 4fr repeat(4, 1fr);
+    cursor: pointer;
+    
+}
+.file img{
+    width: 70%;
+    height: 100%;
+}
+.date {
+    margin-left: 170px;
+}
+.size {
+    margin-left: -300px;
+    
+}
+.file button {
+    width: 100px;
+    height: 40px;
+    outline: none;
+    border: 3px #77ccf2 solid;
+    background-color: #fff;
+    border-radius: 20px;
+    cursor: pointer;
+}

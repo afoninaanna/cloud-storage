@@ -2,13 +2,34 @@
     width: 100%;
     height: calc(100vh - 50px - 40px);
     margin: 20px;
-    border: dashed cornflowerblue 2px;
+    border: dashed #6495ed 2px;
+}
+.drop-area p {
+    margin-top: 300px;
+    margin-left: 600px;
+    font-size: 30px;
 }
 .lds-ring {
     display: inline-block;
     position: relative;
     width: 80px;
     height: 80px;
+}
+.btns {
+    display: flex;
+    margin-top: 40px;
+    margin-left: 50px;
+    gap: 20px;
+}
+.disk-btn {
+    background-color: white;
+    outline: none;
+    border: none;
+    width: 140px;
+    height: 45px;
+    border-radius: 20px;
+    border: 3px #77ccf2 solid;
+    font-size: 14px;
 }
 
 .lds-ring div {
@@ -18,10 +39,12 @@
     width: 64px;
     height: 64px;
     margin: 8px;
-    border: 8px solid rgb(191, 42, 42);
+    border: 8px solid #77ccf2;
     border-radius: 50%;
     animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: rgb(194, 20, 20) transparent transparent transparent;
+    border-color: #77ccf2 transparent transparent transparent;
+    margin-top: 300px;
+    margin-left: 680px;
 }
 
 .lds-ring div:nth-child(1) {
@@ -61,4 +84,26 @@
 }
 .disk-list {
     background-image: url(../../assets/list.svg);
+}
+.container {
+    margin-left: 780px;
+    margin-top: -40px;
+    display: flex;
+    align-items: center;
+}
+.container label {
+    color: #6E9FE9;
+    font-size: 18px;
+    margin-right: 10px;
+}
+.container div{
+    width: 450px;
+    height: 45px;
+    padding-left: 15px;
+    text-align: center;
+    padding-top: 10px;
+    border-radius: 20px;
+    border: 1px #6E9FE9 inset;
+    font-size: 14px;
+    margin-right: 20px;
 }
