@@ -56,6 +56,7 @@ class FileController {
     async uploadFile(req, res) {
         try {
             const file = req.files.file;
+            const fileName = req.body.fileName;
             const parent = await File.findOne({user: req.user.id, _id: req.body.parent});
             const user = await User.findOne({_id: req.user.id});
 
@@ -66,9 +67,9 @@ class FileController {
 
             let path;
             if (parent) {
-                path = `${config.get('filePath')}//${user._id}//${parent.path}//${file.name}`;
+                path = `${config.get('filePath')}//${user._id}//${parent.path}//${fileName}`;
             } else {
-                path = `${config.get('filePath')}//${user._id}//${file.name}`;
+                path = `${config.get('filePath')}//${user._id}//${fileName}`;
             }
 
             if(fs.existsSync(path)) {
@@ -76,13 +77,13 @@ class FileController {
             }
             file.mv(path);
 
-            const type = file.name.split('.').pop();
-            let filePath = file.name;
+            const type = fileName.split('.').pop();
+            let filePath = fileName;
             if (parent) {
-                filePath = parent.path + "//" + file.name;
+                filePath = parent.path + "//" + fileName;
             }
             const dbFile = new File({
-                name: file.name,
+                name: fileName,
                 type,
                 size: file.size,
                 path: filePath,
@@ -115,12 +116,15 @@ class FileController {
 
     async deleteFile(req, res) {
         try {
+            const user = await User.findOne({ _id: req.user.id });
             const file = await File.findOne({_id: req.query.id, user: req.user.id});
             if (!file) {
                 return res.status(400).json({message: "File not found"});
             }
             fileService.deleteFile(file);
+            user.usedSpace = user.usedSpace - file.size;
             await file.remove();
+            await user.save()
             return res.json({message: "File was deleted"});
         } catch (error) {
             console.log(error);
