@@ -13,6 +13,8 @@ const Disk = () => {
   const dirStack = useSelector(state => state.files.dirStack);
   const [dragEnter, setDragEnter] = useState(false);
   const [sort, setSort] = useState('type');
+  const [iv, setIv] = useState({});
+  const [key, setKey] = useState({});
 
   useEffect(() => {
     dispatch(getFiles(currentDir, sort));
@@ -29,7 +31,15 @@ const Disk = () => {
 
   function fileUploadHadler(event) {
     const files = [...event.target.files];
-    files.forEach(file => dispatch(uploadFile(file, currentDir)));
+    files.forEach( (file) => {
+      encryptblob(file).then((value) => {
+        const fileName = file.name;
+        console.log(fileName);
+        setIv({...iv, [fileName]: value[1]});
+        setKey({...key, [fileName]: value[2]});
+        dispatch(uploadFile(value[0]), currentDir);
+      });
+    });
   }
 
   function dragEnterHandler(event) {
@@ -44,14 +54,46 @@ const Disk = () => {
     setDragEnter(false);
   }
 
+  async function encryptblob(blob) {
+    let iv = crypto.getRandomValues(new Uint8Array(12));
+    
+    let algorithm = {
+      name: "AES-GCM",
+      iv: iv
+    }
+    let key = await crypto.subtle.generateKey(
+      {
+        name: "AES-GCM",
+        length: 256
+      },
+      true,
+      ["encrypt", "decrypt"]
+    );
+    let data = await blob.arrayBuffer();
+
+    const result = await crypto.subtle.encrypt(algorithm, key, data);
+
+    let exportedkey = await crypto.subtle.exportKey("jwk", key);
+
+    return [new Blob([result]), iv.toString(), exportedkey];
+  }
+
   function drogHandler(event) {
     event.preventDefault();
     event.stopPropagation();
     let files = [...event.dataTransfer.files];
     setDragEnter(false);
-    files.forEach(file => dispatch(uploadFile(file, currentDir)));
-  }
 
+    files.forEach( (file) => {
+      encryptblob(file).then((value) => {
+        const fileName = file.name;
+        setIv({ ...iv, [fileName]: value[1] });
+        setKey({ ...key, [fileName]: value[2] });
+        dispatch(uploadFile(value[0], file.name ), currentDir);
+      });
+    });
+  }
+  console.log(iv);
   if (loader) {
     return (
       <div>
@@ -68,26 +110,32 @@ const Disk = () => {
   return ( !dragEnter?
     <div onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
       <div>
-        <button onClick={() => backClickHandler()}>Назад</button>
-        <button onClick={() => showPopupHandler()}>Создать папку</button>
-        <div>
-          <label htmlFor='input-upload'>Загрузить файл</label>
-          <input multiple={true} onChange={(event) => fileUploadHadler(event)} type='file' id='input-upload'/>
+        <div className='btns'>
+          <button className='disk-btn' onClick={() => backClickHandler()}>Назад</button>
+          <button className='disk-btn' onClick={() => showPopupHandler()}>Создать папку</button>
         </div>
-        <select value={sort} onChange={(e) => setSort(e.target.value)}>
-          <option value='name'>По имени</option>
-          <option value='type'>По типу</option>
-          <option value='date'>По дате</option>
-        </select>
-        <button className='disk-plate' onClick={() => dispatch(setFileView('plate'))}/>
-        <button className='disk-list' onClick={() => dispatch(setFileView('list'))} />
+
+        <div className='container'>
+          <div>
+            <label htmlFor='input-upload'>Загрузить файл</label>
+            <input multiple={true} onChange={(event) => fileUploadHadler(event)} type='file' id='input-upload'/>
+          </div>
+          <select value={sort} onChange={(e) => setSort(e.target.value)}>
+            <option value='name'>По имени</option>
+            <option value='type'>По типу</option>
+            <option value='date'>По дате</option>
+          </select>
+          <button className='disk-plate' onClick={() => dispatch(setFileView('plate'))} />
+          <button className='disk-list' onClick={() => dispatch(setFileView('list'))} />
+        </div>
+        
       </div>
-      <FileList/>
+      <FileList iv={iv} ckey={key}/>
       <Popup/>
     </div>
     :
     <div className='drop-area' onDrop={drogHandler} onDragEnter={dragEnterHandler} onDragLeave={dragLeaveHandler} onDragOver={dragEnterHandler}>
-      Перетащите файлы сюда
+      <p>Перетащите файлы сюда</p>
     </div>
   )
 }
