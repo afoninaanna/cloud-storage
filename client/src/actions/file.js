@@ -46,24 +46,17 @@ export function createDir(dirId, name) {
     }
 }
 
-export function uploadFile(file, dirId) {
+export function uploadFile(file, fileName, dirId) {
     return async dispatch => {
         try {
             const formData = new FormData();
             formData.append('file', file);
+            formData.append('fileName', fileName);
             if(dirId) {
                 formData.append('parent', dirId);
             }
-            const response = await axios.post(`${API_URL}/api/files/upload`, formData, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }, 
-                // onUploadProgress: progressEvent => {
-                //     const totalLength = progressEvent.lengthComputable ? progressEvent.total : (progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length') );
-                //     console.log('total', totalLength)
-                //     if (totalLength) {
-                //         let progress = Math.round((progressEvent.loaded * 100) / totalLength)
-                //         console.log(progress)
-                //     }
-                // }
+            const response = await axios.post(`${API_URL}/api/files/upload`, formData , {
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
             })
             dispatch(addFile(response.data));
         } catch (error) {
@@ -72,21 +65,47 @@ export function uploadFile(file, dirId) {
     }
 }
 
-export async function downloadFile(file) {
+export async function downloadFile(file, iv, key) {
     const response = await fetch(`${API_URL}/api/files/download?id=${file._id}`, { 
         headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`
         }
     })
     if (response.status === 200) {
+        async function decryptblob(encblob, ivdata, exportedkey) {
+            let key = await crypto.subtle.importKey(
+                "jwk",
+                exportedkey,
+                { name: "AES-GCM" },
+                true,
+                ["encrypt", "decrypt"]
+            );
+
+            console.log('ivdata', ivdata);
+            let iv = new Uint8Array(ivdata.split(','))
+
+            let algorithm = {
+                name: "AES-GCM",
+                iv: iv
+            }
+
+            let data = await encblob.arrayBuffer();
+
+            let decryptedData = await crypto.subtle.decrypt(algorithm, key, data);
+
+            return new Blob([decryptedData]);
+        }
         const blob = await response.blob();
-        const downloadUrl = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = file.name;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        const result = decryptblob(blob, iv, key);
+        result.then((value) => {
+            const downloadUrl = window.URL.createObjectURL(value);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = file.name;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        })
     }
 }
 
